@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { Github, Mail } from 'lucide-react';
+import { Github } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState<'initial' | 'verification'>('initial');
   const [verificationCode, setVerificationCode] = useState(['', '', '', '']);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
 
   const handleCodeChange = (index: number, value: string) => {
     if (value.length <= 1) {
@@ -12,12 +18,24 @@ function Login() {
       newCode[index] = value;
       setVerificationCode(newCode);
       
-      // Auto-focus next input
       if (value && index < 3) {
         const nextInput = document.getElementById(`code-${index + 1}`);
         nextInput?.focus();
       }
     }
+  };
+
+  const handleSubmit = async () => {
+    if (isLogin) {
+      await login(username, password);
+    } else {
+      if (step === 'initial') {
+        setStep('verification');
+      } else {
+        await register(username, password);
+      }
+    }
+    navigate('/');
   };
 
   return (
@@ -50,11 +68,15 @@ function Login() {
               <input
                 type="text"
                 placeholder="pseudo"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700"
               />
               <input
                 type="password"
                 placeholder="mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700"
               />
               {!isLogin && (
@@ -71,7 +93,7 @@ function Login() {
               )}
 
               <button 
-                onClick={() => setStep('verification')}
+                onClick={handleSubmit}
                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
               >
                 {isLogin ? 'CONNEXION' : 'SUIVANT'}
@@ -106,7 +128,10 @@ function Login() {
             <p className="text-sm text-gray-400 text-center mb-4">
               Le code a été envoyé à votre email/téléphone
             </p>
-            <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+            <button 
+              onClick={handleSubmit}
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            >
               CONNEXION
             </button>
             <button className="w-full text-center text-gray-400 hover:text-white mt-2">
