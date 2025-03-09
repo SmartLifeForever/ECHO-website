@@ -1,3 +1,82 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scroll-padding-top: 6rem;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #000000;
+}
+
+.eco-blur-bg {
+  position: relative;
+}
+
+.eco-blur-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.2);
+  z-index: -1;
+  opacity: 0.15;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+  transform: translateY(-10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 200ms ease-in-out;
+  margin-top: -0.5rem;
+  padding-top: 1rem;
+}
+
+.dropdown-menu.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.auth-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.auth-panel {
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.auth-panel.login {
+  transform: translateX(0);
+}
+
+.auth-panel.register {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(100%);
+}
+
+.auth-panel.login.slide-out {
+  transform: translateX(-100%);
+}
+
+.auth-panel.register.slide-in {
+  transform: translateX(0);
+}

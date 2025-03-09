@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Github } from 'lucide-react';
+import { Github, Leaf, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,31 +38,38 @@ function Login() {
     navigate('/');
   };
 
+  const toggleAuthMode = () => {
+    setIsLogin(!isLogin);
+    setUsername('');
+    setPassword('');
+  };
+
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
-      <div className="bg-gray-900 p-8 rounded-lg shadow-xl w-96">
-        {step === 'initial' ? (
-          <>
-            <h2 className="text-2xl font-bold mb-6 text-center text-white">
-              {isLogin ? 'connexion' : 'créer un compte'}
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center eco-blur-bg">
+      <div className="glass-card p-8 rounded-lg shadow-xl w-96">
+        <div className="auth-container">
+          <div className={`auth-panel ${isLogin ? 'login' : 'login slide-out'}`}>
+            <div className="flex justify-center mb-6">
+              <Leaf className="w-12 h-12 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold mb-6 text-center text-light">
+              connexion
             </h2>
 
-            {isLogin && (
-              <div className="mb-6">
-                <div className="flex justify-center space-x-4 mb-4">
-                  <button className="p-2 bg-white rounded-full">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6" />
-                  </button>
-                  <button className="p-2 bg-[#5865F2] rounded-full">
-                    <img src="https://discord.com/assets/favicon.ico" alt="Discord" className="w-6 h-6" />
-                  </button>
-                  <button className="p-2 bg-gray-800 rounded-full">
-                    <Github className="w-6 h-6" />
-                  </button>
-                </div>
-                <div className="text-center text-gray-400 mb-4">ou</div>
+            <div className="mb-6">
+              <div className="flex justify-center space-x-4 mb-4">
+                <button className="p-2 bg-white rounded-full">
+                  <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6" />
+                </button>
+                <button className="p-2 bg-[#5865F2] rounded-full">
+                  <img src="https://discord.com/assets/favicon.ico" alt="Discord" className="w-6 h-6" />
+                </button>
+                <button className="p-2 bg-dark rounded-full">
+                  <Github className="w-6 h-6" />
+                </button>
               </div>
-            )}
+              <div className="text-center text-gray-400 mb-4">ou</div>
+            </div>
 
             <div className="space-y-4">
               <input
@@ -70,75 +77,79 @@ function Login() {
                 placeholder="pseudo"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700"
+                className="w-full bg-dark/50 text-light px-4 py-2 rounded-lg border border-accent/20 focus:outline-none focus:border-primary"
               />
               <input
                 type="password"
                 placeholder="mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700"
+                className="w-full bg-dark/50 text-light px-4 py-2 rounded-lg border border-accent/20 focus:outline-none focus:border-primary"
               />
-              {!isLogin && (
-                <>
-                  <input
-                    type="password"
-                    placeholder="confirmer le mot de passe"
-                    className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700"
-                  />
-                  <div className="flex items-center justify-center bg-gray-800 p-2 rounded-lg">
-                    <div className="g-recaptcha" data-sitekey="your-site-key"></div>
-                  </div>
-                </>
-              )}
 
               <button 
                 onClick={handleSubmit}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                className="w-full bg-primary text-dark py-2 rounded-lg hover:bg-accent transition-colors font-semibold"
               >
-                {isLogin ? 'CONNEXION' : 'SUIVANT'}
+                CONNEXION
               </button>
 
               <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="w-full text-center text-gray-400 hover:text-white"
+                onClick={toggleAuthMode}
+                className="w-full text-center text-gray-400 hover:text-light flex items-center justify-center group"
               >
-                {isLogin ? 'Créer un compte' : 'Déjà inscrit ?'}
+                <span>Créer un compte</span>
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>
-          </>
-        ) : (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-center text-white">
-              Code de confirmation
-            </h2>
-            <div className="flex justify-center space-x-2 mb-4">
-              {verificationCode.map((code, index) => (
-                <input
-                  key={index}
-                  id={`code-${index}`}
-                  type="text"
-                  maxLength={1}
-                  value={code}
-                  onChange={(e) => handleCodeChange(index, e.target.value)}
-                  className="w-12 h-12 text-center bg-gray-800 text-white rounded-lg border border-gray-700"
-                />
-              ))}
-            </div>
-            <p className="text-sm text-gray-400 text-center mb-4">
-              Le code a été envoyé à votre email/téléphone
-            </p>
-            <button 
-              onClick={handleSubmit}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              CONNEXION
-            </button>
-            <button className="w-full text-center text-gray-400 hover:text-white mt-2">
-              Renvoyer le code (1:59)
-            </button>
           </div>
-        )}
+
+          <div className={`auth-panel register ${!isLogin ? 'slide-in' : ''}`}>
+            <div className="flex justify-center mb-6">
+              <Leaf className="w-12 h-12 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold mb-6 text-center text-light">
+              créer un compte
+            </h2>
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="pseudo"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full bg-dark/50 text-light px-4 py-2 rounded-lg border border-accent/20 focus:outline-none focus:border-primary"
+              />
+              <input
+                type="password"
+                placeholder="mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-dark/50 text-light px-4 py-2 rounded-lg border border-accent/20 focus:outline-none focus:border-primary"
+              />
+              <input
+                type="password"
+                placeholder="confirmer le mot de passe"
+                className="w-full bg-dark/50 text-light px-4 py-2 rounded-lg border border-accent/20 focus:outline-none focus:border-primary"
+              />
+
+              <button 
+                onClick={handleSubmit}
+                className="w-full bg-primary text-dark py-2 rounded-lg hover:bg-accent transition-colors font-semibold"
+              >
+                SUIVANT
+              </button>
+
+              <button
+                onClick={toggleAuthMode}
+                className="w-full text-center text-gray-400 hover:text-light flex items-center justify-center group"
+              >
+                <span>Déjà inscrit ?</span>
+                <ArrowRight className="w-4 h-4 ml-2 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
