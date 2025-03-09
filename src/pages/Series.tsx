@@ -47,7 +47,7 @@ function Series() {
               to={`/episode/${episode.id}`}
               className="flex-shrink-0 text-center"
             >
-              <div className={`w-32 h-1 mb-2 ${isEpisodeCompleted(episode.id) ? 'bg-gray-600'}`}></div>
+              <div className={`w-32 h-1 mb-2 ${isEpisodeCompleted(episode.id) ? 'bg-primary' : 'bg-gray-600'}`}></div>
               <span className={`text-sm ${isEpisodeCompleted(episode.id) ? 'text-primary' : 'text-gray-400'}`}>
                 Épisode {episode.id}
               </span>
